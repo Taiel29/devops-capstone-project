@@ -129,7 +129,7 @@ class TestAccountService(TestCase):
         """It should read a single Account"""
         account = self._create_accounts(1)[0]
         response = self.client.get(f"{BASE_URL}/{account.id}", content_type="application/json")
-        
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_account = response.get_json()
         self.assertEqual(new_account["name"], account.name)
@@ -137,32 +137,32 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["address"], account.address)
         self.assertEqual(new_account["phone_number"], account.phone_number)
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
-    
+
     def test_account_not_found(self):
         """It should fail to read a inexisting Account"""
         response = self.client.get(f"{BASE_URL}/0")
-        
+
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_update_account(self):
         """It should update a existing Account"""
         account = AccountFactory()
-        response = self.client.post(BASE_URL,json=account.serialize())
+        response = self.client.post(BASE_URL, json=account.serialize())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         new_account = response.get_json()
-        new_account["name"]="test name"
-        response = self.client.put(f"{BASE_URL}/{new_account['id']}",json=new_account)
+        new_account["name"] = "test name"
+        response = self.client.put(f"{BASE_URL}/{new_account['id']}", json=new_account)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_account = response.get_json()
-        self.assertEqual(updated_account["name"],"test name")
+        self.assertEqual(updated_account["name"], "test name")
 
     def test_update_not_found(self):
         """It should not update a inexisting Account"""
         account = AccountFactory()
-        response = self.client.put(f"{BASE_URL}/0",json=account.serialize())
+        response = self.client.put(f"{BASE_URL}/0", json=account.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_get_account_list(self):
         """It should Get a list of Accounts"""
         self._create_accounts(5)
@@ -181,4 +181,3 @@ class TestAccountService(TestCase):
         """It should not allow an illegal method call"""
         response = self.client.delete(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
